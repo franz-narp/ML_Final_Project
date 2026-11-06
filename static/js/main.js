@@ -105,14 +105,65 @@
     max: 30000,
   });
 
-  // Calculate Value Button (Visual pulse feedback)
+  // Calculate Value Button
   const recalculateBtn = document.getElementById('recalculateBtn');
   const heroPrice = document.getElementById('heroEstimatedPrice');
+  const predictionStatus = document.getElementById('predictionStatus');
 
-  if (recalculateBtn && heroPrice) {
-    recalculateBtn.addEventListener('click', () => {
+  if (recalculateBtn && heroPrice && predictionStatus) {
+    const buttonLabel = recalculateBtn.querySelector('span:last-child');
+    const currencyFormatter = new Intl.NumberFormat('en-PH', {
+      style: 'currency',
+      currency: 'PHP',
+      maximumFractionDigits: 0,
+    });
+
+    recalculateBtn.addEventListener('click', async () => {
+      const requestData = {
+        Bedrooms: Number(document.getElementById('bedRange').value),
+        Bath: Number(document.getElementById('bathRange').value),
+        'Floor_area (sqm)': Number(document.getElementById('floorInput').value.replace(/,/g, '').trim()),
+        'Land_area (sqm)': Number(document.getElementById('lotInput').value.replace(/,/g, '').trim()),
+      };
+
+      recalculateBtn.disabled = true;
+      recalculateBtn.setAttribute('aria-busy', 'true');
+      if (buttonLabel) buttonLabel.textContent = 'Calculating...';
+      predictionStatus.classList.remove('text-crimson');
+      predictionStatus.textContent = 'Calculating your estimate...';
       heroPrice.classList.add('opacity-40');
-      setTimeout(() => heroPrice.classList.remove('opacity-40'), 150);
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData),
+        });
+        let result;
+        try {
+          result = await response.json();
+        } catch {
+          throw new Error('The server returned an invalid response.');
+        }
+
+        if (!response.ok) {
+          throw new Error(result.error || 'The estimate could not be calculated.');
+        }
+        if (typeof result.prediction !== 'number' || !Number.isFinite(result.prediction)) {
+          throw new Error('The server returned an invalid estimate.');
+        }
+
+        heroPrice.textContent = currencyFormatter.format(result.prediction);
+        predictionStatus.textContent = 'Model-generated estimate; actual market prices may vary.';
+      } catch (error) {
+        predictionStatus.classList.add('text-crimson');
+        predictionStatus.textContent = error.message || 'Unable to calculate an estimate. Please try again.';
+      } finally {
+        recalculateBtn.disabled = false;
+        recalculateBtn.removeAttribute('aria-busy');
+        if (buttonLabel) buttonLabel.textContent = 'Calculate Value';
+        heroPrice.classList.remove('opacity-40');
+      }
     });
   }
 })();
