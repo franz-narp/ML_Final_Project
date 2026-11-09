@@ -1,12 +1,63 @@
 {
-    "model_name": "XGBoost Regressor",
+    "model_name": "XGBoost Regressor (Constrained)",
     "target": "Price (PHP)",
     "features": [
         "Bedrooms",
         "Bath",
         "Floor_area (sqm)",
-        "Land_area (sqm)"
+        "Land_area (sqm)",
+        "Property_Type"
     ],
+    "test_metrics": {
+        "mae": 1470854.6067708333,
+        "rmse": 2360372.407119715,
+        "r2": 0.9498789895078149
+    },
+    "range_ratio": [
+        0.748824383412674,
+        1.2616594282682532
+    ],
+    "range_test_coverage": 0.7791666666666667,
+    "limits": {
+        "Condo / Apartment": {
+            "Bedrooms": [
+                1,
+                4
+            ],
+            "Floor_area (sqm)": [
+                17,
+                409
+            ],
+            "Bath": [
+                1,
+                3
+            ]
+        },
+        "House / Townhouse": {
+            "Bedrooms": [
+                1,
+                5
+            ],
+            "Floor_area (sqm)": [
+                25,
+                323
+            ],
+            "Land_area (sqm)": [
+                36,
+                251
+            ]
+        }
+    },
+    "market_baseline": {
+        "Condo / Apartment": [
+            7288260.0,
+            17363800.0
+        ],
+        "House / Townhouse": [
+            2930800.0,
+            6650000.0
+        ]
+    },
     "scikit_learn_version": "1.9.1",
     "xgboost_version": "3.2.0"
 }

@@ -1,0 +1,11 @@
+# EstiMate display settings. Use 1 to turn a section on and 0 to turn it off.
+# Save this file and refresh the page to apply changes.
+
+# Show similar real listings after an estimate.
+showlistings = 1
+
+# Show each model's estimate side by side. 0 shows only the best model (XGBoost).
+showdifferentmodels = 1
+
+# Show the table comparing overall performance of all the models.
+showstatistics = 1

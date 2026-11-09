@@ -101,43 +101,58 @@
               <h2 class="font-headline-sm text-lg text-primary font-bold tracking-tight">Property Details</h2>
             </div>
 
+            <!-- Input 0: Property Type -->
+            <div class="flex flex-col gap-space-xs">
+              <label class="font-headline-sm text-sm text-primary font-semibold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-lg text-picton-blue">home_work</span>Property Type
+              </label>
+              <div class="grid grid-cols-2 gap-space-xs pt-1">
+                {% for ptype in limits %}
+                <button type="button" data-type="{{ ptype }}"
+                  class="type-btn py-2.5 text-center rounded-lg font-headline-sm text-sm cursor-pointer bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-container border border-outline-variant transition-colors font-medium">
+                  {{ ptype }}
+                </button>
+                {% endfor %}
+              </div>
+            </div>
+
             <!-- Input 1: Bedrooms -->
             <div class="flex flex-col gap-space-xs">
               <div class="flex items-center justify-between">
                 <label class="font-headline-sm text-sm text-primary font-semibold flex items-center gap-1.5">
                   <span class="material-symbols-outlined text-lg text-picton-blue">bed</span>Bedrooms
                 </label>
-                <span id="bedDisplay" class="font-headline-sm text-base text-primary font-bold">4 Beds</span>
+                <span id="bedDisplay" class="font-headline-sm text-base text-primary font-bold">2 Beds</span>
               </div>
               <div id="bedSelectorGroup" class="grid grid-cols-5 gap-space-xs pt-1">
                 {% for bed in [1, 2, 3, 4, 5] %}
                 <button type="button" data-beds="{{ bed }}"
-                  class="bed-btn py-2.5 text-center rounded-lg font-headline-sm text-sm cursor-pointer {% if bed == 4 %}bg-primary text-white font-bold shadow-md shadow-primary/25 border border-primary{% else %}bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-container border border-outline-variant transition-colors font-medium{% endif %}">
-                  {{ '5+' if bed == 5 else bed }}
+                  class="bed-btn py-2.5 text-center rounded-lg font-headline-sm text-sm cursor-pointer {% if bed == 2 %}bg-primary text-white font-bold shadow-md shadow-primary/25 border border-primary{% else %}bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-container border border-outline-variant transition-colors font-medium{% endif %}">
+                  {{ bed }}
                 </button>
                 {% endfor %}
               </div>
-              <input id="bedRange" type="range" min="1" max="5" value="4"
+              <input id="bedRange" type="range" min="1" max="5" value="2"
                 class="w-full accent-primary mt-1.5 cursor-pointer h-1.5 bg-surface-container rounded-lg">
             </div>
 
-            <!-- Input 2: Bathrooms -->
-            <div class="flex flex-col gap-space-xs">
+            <!-- Input 2: Bathrooms (condos only) -->
+            <div id="bathField" class="flex flex-col gap-space-xs">
               <div class="flex items-center justify-between">
                 <label class="font-headline-sm text-sm text-primary font-semibold flex items-center gap-1.5">
                   <span class="material-symbols-outlined text-lg text-picton-blue">bathtub</span>Bathrooms
                 </label>
-                <span id="bathDisplay" class="font-headline-sm text-base text-primary font-bold">3 Baths</span>
+                <span id="bathDisplay" class="font-headline-sm text-base text-primary font-bold">1 Bath</span>
               </div>
-              <div id="bathSelectorGroup" class="grid grid-cols-4 gap-space-xs pt-1">
-                {% for bath in [1, 2, 3, 4] %}
+              <div id="bathSelectorGroup" class="grid grid-cols-3 gap-space-xs pt-1">
+                {% for bath in [1, 2, 3] %}
                 <button type="button" data-baths="{{ bath }}"
-                  class="bath-btn py-2.5 text-center rounded-lg font-headline-sm text-sm cursor-pointer {% if bath == 3 %}bg-primary text-white font-bold shadow-md shadow-primary/25 border border-primary{% else %}bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-container border border-outline-variant transition-colors font-medium{% endif %}">
-                  {{ '4+' if bath == 4 else bath }}
+                  class="bath-btn py-2.5 text-center rounded-lg font-headline-sm text-sm cursor-pointer {% if bath == 1 %}bg-primary text-white font-bold shadow-md shadow-primary/25 border border-primary{% else %}bg-surface-container-low text-secondary hover:text-primary hover:bg-surface-container border border-outline-variant transition-colors font-medium{% endif %}">
+                  {{ bath }}
                 </button>
                 {% endfor %}
               </div>
-              <input id="bathRange" type="range" min="1" max="4" step="1" value="3"
+              <input id="bathRange" type="range" min="1" max="3" step="1" value="1"
                 class="w-full accent-primary mt-1.5 cursor-pointer h-1.5 bg-surface-container rounded-lg">
             </div>
 
@@ -150,24 +165,24 @@
                 <span class="font-label-caps text-xs text-secondary uppercase font-semibold">sqm</span>
               </div>
               <div class="relative pt-1">
-                <input id="floorInput" type="text" value="250"
+                <input id="floorInput" type="text" value="60"
                   class="w-full px-space-md py-3 bg-surface-container-low text-primary font-headline-sm text-base font-semibold rounded-lg focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-picton-blue/60 border border-outline-variant transition-all font-label-data">
                 <span
                   class="absolute right-3.5 top-3.5 font-label-caps text-xs text-secondary uppercase font-semibold">sqm</span>
               </div>
               <div class="pt-1">
-                <input id="floorRange" type="range" min="20" max="1000" step="5" value="250"
+                <input id="floorRange" type="range" min="17" max="409" step="1" value="60"
                   class="w-full accent-primary cursor-pointer h-1.5 bg-surface-container rounded-lg">
                 <div class="flex justify-between font-label-data text-xs text-secondary mt-1.5">
-                  <span>20 sqm</span>
-                  <span>500 sqm</span>
-                  <span>1,000 sqm</span>
+                  <span id="floorMinLabel"></span>
+                  <span id="floorMidLabel"></span>
+                  <span id="floorMaxLabel"></span>
                 </div>
               </div>
             </div>
 
-            <!-- Input 4: Land Area -->
-            <div class="flex flex-col gap-space-xs">
+            <!-- Input 4: Land Area (houses only) -->
+            <div id="lotField" class="hidden flex flex-col gap-space-xs">
               <div class="flex items-center justify-between">
                 <label class="font-headline-sm text-sm text-primary font-semibold flex items-center gap-1.5">
                   <span class="material-symbols-outlined text-lg text-picton-blue">crop_square</span>Land Area
@@ -175,18 +190,18 @@
                 <span class="font-label-caps text-xs text-secondary uppercase font-semibold">sqm</span>
               </div>
               <div class="relative pt-1">
-                <input id="lotInput" type="text" value="300"
+                <input id="lotInput" type="text" value="100"
                   class="w-full px-space-md py-3 bg-surface-container-low text-primary font-headline-sm text-base font-semibold rounded-lg focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-picton-blue/60 border border-outline-variant transition-all font-label-data">
                 <span
                   class="absolute right-3.5 top-3.5 font-label-caps text-xs text-secondary uppercase font-semibold">sqm</span>
               </div>
               <div class="pt-1">
-                <input id="lotRange" type="range" min="20" max="30000" step="20" value="300"
+                <input id="lotRange" type="range" min="36" max="251" step="1" value="100"
                   class="w-full accent-primary cursor-pointer h-1.5 bg-surface-container rounded-lg">
                 <div class="flex justify-between font-label-data text-xs text-secondary mt-1.5">
-                  <span>20 sqm</span>
-                  <span>15,000 sqm</span>
-                  <span>30,000 sqm</span>
+                  <span id="lotMinLabel"></span>
+                  <span id="lotMidLabel"></span>
+                  <span id="lotMaxLabel"></span>
                 </div>
               </div>
             </div>
@@ -223,7 +238,7 @@
               </div>
               <div class="flex items-center justify-center gap-1.5 text-secondary font-body-md text-sm">
                 <span>Estimated Range:</span>
-                <span id="intervalRange" class="font-semibold text-primary font-label-data">₱1.19M – ₱1.31M</span>
+                <span id="intervalRange" class="font-semibold text-primary font-label-data">—</span>
               </div>
             </div>
 
@@ -231,12 +246,13 @@
             <div class="flex flex-col gap-1.5 px-space-sm">
               <div
                 class="relative h-2.5 w-full bg-surface-container rounded-full overflow-hidden border border-outline-variant">
-                <div class="absolute left-[15%] w-[70%] h-full bg-primary rounded-full"></div>
+                <div id="baselineBar" class="hidden absolute h-full bg-primary/40 rounded-full"></div>
+                <div id="baselineMarker" class="hidden absolute top-0 h-full w-1 -ml-0.5 bg-primary rounded-full"></div>
               </div>
               <div class="flex justify-between font-label-data text-xs text-secondary">
-                <span id="baselineLowDisplay">₱1,150,000</span>
-                <span class="text-primary font-semibold font-headline-sm">Market Baseline</span>
-                <span id="baselineHighDisplay">₱1,345,000</span>
+                <span id="baselineLowDisplay">—</span>
+                <span class="text-primary font-semibold font-headline-sm" title="Middle 50% of listed prices for this property type; the dark marker is this estimate">Market Baseline</span>
+                <span id="baselineHighDisplay">—</span>
               </div>
             </div>
 
@@ -246,111 +262,92 @@
                 class="p-space-md bg-surface-container-low rounded-xl border border-outline-variant text-center flex flex-col gap-0.5">
                 <span class="font-label-caps text-[11px] text-secondary uppercase font-semibold">Price / Sqm</span>
                 <span id="priceSqFtDisplay"
-                  class="font-headline-sm text-lg text-primary font-bold font-label-data">₱438</span>
+                  class="font-headline-sm text-lg text-primary font-bold font-label-data">—</span>
               </div>
               <div
                 class="p-space-md bg-surface-container-low rounded-xl border border-outline-variant text-center flex flex-col gap-0.5">
                 <span class="font-label-caps text-[11px] text-secondary uppercase font-semibold">Est. Rent</span>
                 <span id="rentalYieldDisplay"
-                  class="font-headline-sm text-lg text-primary font-bold font-label-data">₱5,850/mo</span>
+                  class="font-headline-sm text-lg text-primary font-bold font-label-data">—</span>
               </div>
               <div
                 class="p-space-md bg-surface-container-low rounded-xl border border-outline-variant text-center flex flex-col gap-0.5">
                 <span class="font-label-caps text-[11px] text-secondary uppercase font-semibold">Market Trend</span>
-                <span class="font-headline-sm text-lg text-jewel-green font-bold font-label-data">+4.2%</span>
+                <span id="marketTrendDisplay" title="{{ market_trend.source }}"
+                  class="font-headline-sm text-lg {{ 'text-jewel-green' if market_trend.percent >= 0 else 'text-crimson' }} font-bold font-label-data">{{ '%+.1f' | format(market_trend.percent) }}%</span>
               </div>
             </div>
           </div>
 
-          <!-- Report Actions -->
-          <div class="flex items-center gap-space-sm pt-2 relative z-10">
-            <button type="button"
-              class="flex-1 py-3 px-space-md bg-surface-container-low hover:bg-surface-container text-primary font-headline-sm text-sm rounded-xl transition-colors flex items-center justify-center gap-1.5 font-semibold border border-outline-variant cursor-pointer">
-              <span class="material-symbols-outlined text-base text-secondary">bookmark_border</span>Save Report
-            </button>
-            <button type="button"
-              class="flex-1 py-3 px-space-md bg-surface-container-low hover:bg-surface-container text-primary font-headline-sm text-sm rounded-xl transition-colors flex items-center justify-center gap-1.5 font-semibold border border-outline-variant cursor-pointer">
-              <span class="material-symbols-outlined text-base text-secondary">share</span>Share
-            </button>
-          </div>
         </div>
 
       </div>
     </section>
 
-    <!-- Historical Price Trend Section -->
+    {% if settings.showdifferentmodels %}
+    <!-- Different Models Section -->
     <section class="w-full px-margin pb-space-xl">
-      <div
-        class="max-w-7xl mx-auto bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant flex flex-col gap-space-md">
-        <div class="flex items-center justify-between">
-          <h3 class="font-headline-sm text-lg text-primary font-bold tracking-tight">3-Year Price Trend</h3>
+      <div class="max-w-7xl mx-auto flex flex-col gap-space-md">
+        <div class="flex items-center justify-between gap-space-md">
+          <h3 class="font-headline-sm text-lg text-primary font-bold tracking-tight">What Each Model Estimates</h3>
+          <span class="font-body-md text-xs text-secondary font-medium text-right">The main estimate uses the selected model</span>
         </div>
+        <div id="modelEstimatesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter"></div>
+      </div>
+    </section>
+    {% endif %}
 
-        <div
-          class="relative w-full h-52 bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between overflow-hidden border border-outline-variant">
-          <!-- Background Grid Lines -->
-          <div class="absolute inset-0 flex flex-col justify-between py-6 px-4 opacity-40 pointer-events-none">
-            <div class="w-full h-px bg-outline-variant"></div>
-            <div class="w-full h-px bg-outline-variant"></div>
-            <div class="w-full h-px bg-outline-variant"></div>
-          </div>
-
-          <!-- Trend Line SVG -->
-          <svg class="w-full h-full relative z-10" fill="none" preserveAspectRatio="none" viewBox="0 0 900 180">
-            <path d="M 0,140 Q 200,125 400,95 T 800,45 L 900,35 L 900,180 L 0,180 Z" fill="#45B1E8" fill-opacity="0.15">
-            </path>
-            <path d="M 0,140 Q 200,125 400,95 T 800,45 L 900,35" stroke="#243f74" stroke-linecap="round"
-              stroke-width="3"></path>
-            <circle cx="200" cy="125" fill="#243f74" r="4" stroke="#ffffff" stroke-width="1.5"></circle>
-            <circle cx="400" cy="95" fill="#243f74" r="4" stroke="#ffffff" stroke-width="1.5"></circle>
-            <circle cx="650" cy="65" fill="#243f74" r="4" stroke="#ffffff" stroke-width="1.5"></circle>
-            <circle cx="850" cy="40" fill="#243f74" r="5.5" stroke="#ffffff" stroke-width="2.5"></circle>
-          </svg>
-
-          <!-- Year Labels -->
-          <div
-            class="flex justify-between font-label-data text-xs text-secondary z-10 pt-1 border-t border-outline-variant">
-            <span id="trend2022">2022 (₱980K)</span>
-            <span id="trend2023">2023 (₱1.06M)</span>
-            <span id="trend2024">2024 (₱1.18M)</span>
-            <span id="trend2025" class="text-primary font-bold">2025 (₱1.25M)</span>
-          </div>
+    {% if settings.showstatistics %}
+    <!-- Model Statistics Section -->
+    <section class="w-full px-margin pb-space-xl">
+      <div class="max-w-7xl mx-auto bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant flex flex-col gap-space-md">
+        <div class="flex flex-col gap-1">
+          <h3 class="font-headline-sm text-lg text-primary font-bold tracking-tight">Model Performance</h3>
+          <p class="font-body-md text-xs text-secondary">Lower MAE and RMSE are better; higher R² is better. Green marks the best score, and smaller text shows the gap to it.</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[720px] text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-outline-variant text-secondary">
+                <th scope="col" class="text-left py-2 pr-4 font-semibold">Model</th>
+                {% for column in statistics.columns %}
+                <th scope="col" class="text-right py-2 px-3 font-semibold">{{ column }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in statistics.rows %}
+              <tr class="border-b border-outline-variant last:border-0">
+                <th scope="row" class="text-left py-3 pr-4 font-semibold text-primary">
+                  {{ row.name }}{% if row.selected %}<span class="ml-2 text-xs font-bold text-jewel-green">Selected</span>{% endif %}
+                </th>
+                {% for cell in row.cells %}
+                <td class="text-right py-3 px-3 font-label-data {{ 'text-jewel-green font-bold' if cell.is_best else 'text-primary' }}">
+                  <div>{{ cell.value }}</div>
+                  {% if cell.gap %}<div class="text-xs text-secondary font-normal">{{ cell.gap }}</div>{% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
+    {% endif %}
 
-    <!-- Recent Nearby Sales Section -->
+    {% if settings.showlistings %}
+    <!-- Similar Listings Section -->
     <section class="w-full px-margin pb-space-xl">
       <div class="max-w-7xl mx-auto flex flex-col gap-space-md">
         <div class="flex items-center justify-between">
-          <h3 class="font-headline-sm text-lg text-primary font-bold tracking-tight">Recent Nearby Sales</h3>
-          <span class="font-body-md text-xs text-secondary font-medium">Similar size &amp; neighborhood</span>
+          <h3 class="font-headline-sm text-lg text-primary font-bold tracking-tight">Similar Listings</h3>
+          <span class="font-body-md text-xs text-secondary font-medium">Asking prices from Lamudi listings in the dataset</span>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-          {% for comp in comparables %}
-          <div
-            class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant overflow-hidden flex flex-col group hover:border-picton-blue transition-colors">
-            <div class="relative h-48 w-full overflow-hidden bg-surface-container">
-              <img src="{{ url_for('static', filename=comp.image) }}" alt="{{ comp.image_alt }}"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            </div>
-            <div class="p-space-md flex flex-col gap-1">
-              <span class="font-headline-sm text-lg text-primary font-bold font-label-data">{{ comp.price }}</span>
-              <p class="font-body-md text-sm text-secondary truncate">{{ comp.address }}</p>
-              <div class="flex items-center gap-2 text-secondary font-label-data text-xs pt-1">
-                <span>{{ comp.beds }}</span>
-                <span>•</span>
-                <span>{{ comp.baths }}</span>
-                <span>•</span>
-                <span>{{ comp.sqft }}</span>
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
+        <div id="comparablesGrid" class="grid grid-cols-1 md:grid-cols-3 gap-gutter"></div>
       </div>
     </section>
+    {% endif %}
 
   </main>
 
@@ -367,6 +364,7 @@
   </footer>
 
   <!-- Frontend UI Script -->
+  <script id="limitsData" type="application/json">{{ limits | tojson }}</script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
